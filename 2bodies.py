@@ -22,7 +22,28 @@ y=np.concatenate((rs, re, vs1, ve1))
 
 def motion(t, y):
     """
-    
+    A function that takes in a time series t, and a state vector, y and returns the differential of the state vector (ydot)
+
+    -----------------------------------------------------------------
+    Inputs: 
+    t: array
+    Array of times to calculate the positions at
+
+    y: array
+    State vector - assumed to have the following structure:
+    y[0:3] -> inital x,y,z starting location of body 1
+    y[3:6] -> inital x,y,z starting location of body 2
+    y[6:9] -> inital x,y,z starting velocity of body 1
+    y[9:12] -> inital x,y,z starting velocity of body 2
+
+    -----------------------------------------------------------------
+    returns:
+    ydot: array
+    ydot[0:3] -> inital x,y,z starting velocity of body 1
+    ydot[3:6] -> inital x,y,z starting velocity of body 2
+    ydot[6:9] -> inital x,y,z starting acceleration of body 1
+    ydot[9:12] -> inital x,y,z starting acceleration of body 2
+
     """
     #Extract information back out of the state vector:
     rs, re, vs1, ve1 = np.split(y, 4)
