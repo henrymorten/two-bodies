@@ -9,3 +9,4 @@ This is a s imple model of the classical two body problem. Given innitial condit
   <li>Matplotlib (.pyplot and .animation): For data visualisation</li>
 </ul>
 
+There are 3 different methods for plotting the 2 body system, comment or un-comment the desired process.

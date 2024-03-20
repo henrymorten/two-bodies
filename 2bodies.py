@@ -99,6 +99,7 @@ solved = scipy.integrate.solve_ivp(
     t_eval=t_points, #Times at which to solve the computated problem
 )
 
+
 #Returns an object with different fields
 ydot = solved.y.T #This is the transpose of values to the solution at time points t
 # solved.t would be the time points - read docs for more
@@ -109,24 +110,145 @@ Rsun, Rearth, Vsun, VEarth = np.split(ydot,4,axis=1)
 #Find the centre of mass (the Barycenter)
 barycenter = (ms*Rsun+me*Rearth)/(me+ms)
 
+######################################### Animated 3D Plot
+"""
 #Define and plot the figure
-fig = plt.figure(figsize=(14, 9))
-#Make the plot 3d
-ax = fig.add_subplot(111, projection="3d")
+fig = plt.figure(figsize=(17, 5))
+
+
+# Create 3 subplots
+ax1 = fig.add_subplot(131, projection="3d")
+ax2 = fig.add_subplot(132, projection="3d")
+ax3 = fig.add_subplot(133, projection="3d")
+
 def update(frame):
-    ax.cla()  # Clear the previous plot
-    ax.set_xlabel("X (Meters)")
-    ax.set_ylabel("Y (Meters)")
-    ax.set_zlabel("Z (Meters)")
-    
-    # Plot Rsun, Rearth, and barycenter only up to the current frame
-    ax.plot(Rsun[:frame, 0], Rsun[:frame, 1], Rsun[:frame, 2], label="Body 1")
-    ax.plot(Rearth[:frame, 0], Rearth[:frame, 1], Rearth[:frame, 2], label="Body 2")
-    ax.plot(barycenter[:frame, 0], barycenter[:frame, 1], barycenter[:frame, 2], label="Barycentre")
-    
-    ax.legend()
+    for ax in [ax1, ax2, ax3]:
+        if ax == ax1:
+            ax.cla()  # Clear the previous plot
+            ax.set_xlabel("X (Meters)")
+            ax.set_ylabel("Y (Meters)")
+            ax.set_zlabel("Z (Meters)")
+            
+            # Plot Rsun, Rearth, and barycenter only up to the current frame
+            ax.plot(Rsun[:frame, 0], Rsun[:frame, 1], Rsun[:frame, 2], label="Body 1", c='b')
+            ax.plot(Rearth[:frame, 0], Rearth[:frame, 1], Rearth[:frame, 2], label="Body 2",c='g')
+            ax.plot(barycenter[:frame, 0], barycenter[:frame, 1], barycenter[:frame, 2], label="Barycentre", c='r')
+            ax.set_title("Motion relative to the innertial frame")
+            ax.legend()
+
+        elif ax == ax2:
+            ax.cla()  # Clear the previous plot
+            ax.set_xlabel("X (Meters)")
+            ax.set_ylabel("Y (Meters)")
+            ax.set_zlabel("Z (Meters)")
+            
+            # Plot Rsun, Rearth, and barycenter only up to the current frame
+            ax.plot(Rearth[:frame, 0]- Rsun[:frame, 0], Rearth[:frame, 1] - Rsun[:frame, 1], Rearth[:frame, 2]  - Rsun[:frame, 2], label="Body 2",c='g')
+            ax.plot(barycenter[:frame, 0] - Rsun[:frame, 0], barycenter[:frame, 1] - Rsun[: frame,1], barycenter[:frame, 2] - Rsun[:frame,2], label="Barycentre", c='r')
+            ax.set_title("Motion relative to Body 1")
+            ax.legend()
+        
+        else:
+            ax.cla()  # Clear the previous plot
+            ax.set_xlabel("X (Meters)")
+            ax.set_ylabel("Y (Meters)")
+            ax.set_zlabel("Z (Meters)")
+            
+            # Plot Rsun, Rearth, and barycenter only up to the current frame
+            ax.plot(Rsun[:frame, 0] - barycenter[:frame, 0], Rsun[:frame, 1] - barycenter[:frame, 1], Rsun[:frame, 2] - barycenter[:frame, 2], label="Body 1",c='b')
+            ax.plot(Rearth[:frame, 0] - barycenter[:frame, 0], Rearth[:frame, 1] - barycenter[:frame, 1], Rearth[:frame, 2] - barycenter[:frame, 2], label="Body 2",c='g')
+            ax.set_title("Motion relative to the barycentre ")
+            ax.legend()
+
     plt.draw()  # Update the plot
 
 #Loop over the calculated points to make it look like a smooth graph
 animation = FuncAnimation(fig, update, frames=len(Rsun), interval=1)
 plt.show()
+"""
+######################################### 3D static Plot
+
+#Define and plot the figure
+fig = plt.figure(figsize=(17, 5))
+
+# Create 3 subplots
+ax1 = fig.add_subplot(131,projection="3d")
+ax2 = fig.add_subplot(132,projection="3d")
+ax3 = fig.add_subplot(133,projection="3d")
+
+ax1.cla()  # Clear the previous plot
+ax1.set_xlabel("X (Meters)")
+ax1.set_ylabel("Y (Meters)")
+ax1.set_zlabel("Z (Meters)")
+
+# Plot Rsun, Rearth, and barycenter only up to the current frame
+ax1.plot(Rsun[:, 0], Rsun[:, 1],Rsun[:,2],  label="Body 1",c='b')
+ax1.plot(Rearth[:, 0], Rearth[:, 1],Rearth[:,2], label="Body 2",c='g')
+ax1.plot(barycenter[:, 0], barycenter[:, 1], barycenter[:,2], label="Barycentre",c='r')
+ax1.set_title("Motion relative to the innertial frame")
+ax1.legend()
+
+ax2.cla()  # Clear the previous plot
+ax2.set_xlabel("X (Meters)")
+ax2.set_ylabel("Y (Meters)")
+ax3.set_zlabel("Z (Meters)")
+# Plot Rsun, Rearth, and barycenter only up to the current frame
+ax2.plot(Rearth[:, 0]- Rsun[:, 0], Rearth[:, 1] - Rsun[:, 1], Rearth[:,2] - Rsun[:,2], label="Body 2",c='g')
+ax2.plot(barycenter[:, 0] - Rsun[:, 0], barycenter[:, 1] - Rsun[: ,1], barycenter[:,2] - Rsun[:,2], label="Barycentre",c='r')
+ax2.set_title("Motion relative to Body 1")
+ax2.legend()
+
+ax3.cla()  # Clear the previous plot
+ax3.set_xlabel("X (Meters)")
+ax3.set_ylabel("Y (Meters)")
+ax3.set_zlabel("Z (Meters)")
+# Plot Rsun, Rearth, and barycenter only up to the current frame
+ax3.plot(Rsun[:, 0] - barycenter[:, 0], Rsun[:, 1] - barycenter[:, 1], Rsun[:,2] - barycenter[:,2] ,label="Body 1",c='b')
+ax3.plot(Rearth[:, 0] - barycenter[:, 0], Rearth[:, 1] - barycenter[:, 1], Rearth[:,2] - barycenter[:,2], label="Body 2",c='g')
+ax3.set_title("Motion relative to the barycentre ")
+ax3.legend()
+
+plt.show()
+
+
+######################################### 2D static Plot 
+"""
+#Define and plot the figure
+fig = plt.figure(figsize=(17, 5))
+
+# Create 3 subplots
+ax1 = fig.add_subplot(131)
+ax2 = fig.add_subplot(132)
+ax3 = fig.add_subplot(133)
+
+ax1.cla()  # Clear the previous plot
+ax1.set_xlabel("X (Meters)")
+ax1.set_ylabel("Y (Meters)")
+# Plot Rsun, Rearth, and barycenter only up to the current frame
+ax1.plot(Rsun[:, 0], Rsun[:, 1],  label="Body 1",c='b')
+ax1.plot(Rearth[:, 0], Rearth[:, 1], label="Body 2",c='g')
+ax1.plot(barycenter[:, 0], barycenter[:, 1], label="Barycentre",c='r')
+ax1.set_title("Motion relative to the innertial frame")
+ax1.legend()
+
+ax2.cla()  # Clear the previous plot
+ax2.set_xlabel("X (Meters)")
+ax2.set_ylabel("Y (Meters)")
+# Plot Rsun, Rearth, and barycenter only up to the current frame
+ax2.plot(Rearth[:, 0]- Rsun[:, 0], Rearth[:, 1] - Rsun[:, 1], label="Body 2",c='g')
+ax2.plot(barycenter[:, 0] - Rsun[:, 0], barycenter[:, 1] - Rsun[: ,1],  label="Barycentre",c='r')
+ax2.set_title("Motion relative to Body 1")
+ax2.legend()
+
+ax3.cla()  # Clear the previous plot
+ax3.set_xlabel("X (Meters)")
+ax3.set_ylabel("Y (Meters)")
+# Plot Rsun, Rearth, and barycenter only up to the current frame
+ax3.plot(Rsun[:, 0] - barycenter[:, 0], Rsun[:, 1] - barycenter[:, 1], label="Body 1",c='b')
+ax3.plot(Rearth[:, 0] - barycenter[:, 0], Rearth[:, 1] - barycenter[:, 1],  label="Body 2",c='g')
+ax3.set_title("Motion relative to the barycentre ")
+ax3.legend()
+
+
+plt.show()
+"""
