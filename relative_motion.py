@@ -170,4 +170,27 @@ def update(frame):
 animation = FuncAnimation(fig, update, frames=len(pos), interval=1)
 plt.show()"""
 
+"""
+from mayavi import mlab
 
+# Create a sphere
+u = np.linspace(0, 2 * np.pi, 100)
+v = np.linspace(0, np.pi, 100)
+#With Radius of the earth
+x = re * np.outer(np.cos(u), np.sin(v))
+y = re * np.outer(np.sin(u), np.sin(v))
+z = re * np.outer(np.ones(np.size(u)), np.cos(v))
+
+# Plotting
+mlab.figure(size=(600, 600))
+
+# Plot sphere
+mlab.mesh(x, y, z,colormap='gist_earth')
+
+mlab.axes()
+
+# Plot line
+mlab.plot3d(pos[:, 0], pos[:, 1], pos[:, 2], color=(1, 0, 0), tube_radius=None, line_width=2)
+
+mlab.show()
+"""
