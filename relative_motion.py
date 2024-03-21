@@ -3,11 +3,13 @@ import matplotlib.pyplot as plt
 import scipy.integrate
 from matplotlib.animation import FuncAnimation
 
+plt.close("all")
+
 #gravitational constant
 G = 6.67e-11
 
 #Hours to model over:
-hours = 3600
+hours = 3600 #s
 
 #Mass of the Earth
 me = 5.97e24#Kg
@@ -18,6 +20,9 @@ re = 6378e3 #m
 m2 = 1000 #Kg
 
 #Initial parameters of position and velocity
+# r0 = np.array((8_000e3, 0, 6_000e3)) #m
+# v0 = np.array((0,7_000,0)) #m/s
+
 r0 = np.array((8_000e3, 0, 6_000e3)) #m
 v0 = np.array((0,7_000,0)) #m/s
 
@@ -29,7 +34,7 @@ t_0 = 0
 t_f = 5*hours  # End time (Seconds)
 
 #Define a time array of points to solve at 
-t_points = np.linspace(t_0, t_f, 200)
+t_points = np.linspace(t_0, t_f, 20_000)
 
 def diff(t, y):
     """
@@ -42,14 +47,14 @@ def diff(t, y):
 
     y: array
     State vector - assumed to have the following structure:
-    y[0:3] -> inital x,y,z starting location of body 2
-    y[9:12] -> inital x,y,z starting velocity of body 2
+    y[0:2] -> inital x,y,z starting location of body 2
+    y[3:5] -> inital x,y,z starting velocity of body 2
 
     -----------------------------------------------------------------
     returns:
     ydot: array
-    ydot[3:6] -> inital x,y,z starting velocity of body 2
-    ydot[9:12] -> inital x,y,z starting acceleration of body 2
+    ydot[0:2] -> inital x,y,z starting velocity of body 2
+    ydot[3:5] -> inital x,y,z starting acceleration of body 2
 
     """
     #Extract Position and velocity from the state vector
@@ -68,7 +73,7 @@ def diff(t, y):
     return ydot
 
 #Calculate the gravitational parameter (\mu)
-mu = G*(me+m2)
+mu = G*me
 
 # Docs for scipy.integrate.solve_ivp: https://docs.scipy.org/doc/scipy/reference/generated/scipy.integrate.solve_ivp.html
 #Function numerically integrates a system of orginary differential equations given an initial value.
@@ -77,7 +82,9 @@ solved = scipy.integrate.solve_ivp(
     t_span=[t_0, t_f], #Starts at t0 and continues untill it reaches tf
     t_eval=t_points,
     y0=y, #Initial state of the system
-    vectorized=True
+    vectorized=True,
+    rtol=1e-9,
+    atol=1e-12
 )
 
 #Returns an object with different fields
@@ -89,7 +96,7 @@ pos, vel = np.split(ydot, 2, axis=1)
 
 ######################################### Static 3D Plot
 
-"""
+
 # Create a sphere
 u = np.linspace(0, 2 * np.pi, 100)
 v = np.linspace(0, np.pi, 100)
@@ -102,11 +109,12 @@ z = re * np.outer(np.ones(np.size(u)), np.cos(v))
 fig = plt.figure()
 ax = fig.add_subplot(111, projection='3d')
 
-# Plot the sphere
-ax.plot_surface(x, y, z, color='b', alpha = 0.5)
-
-# Plot the orbit trajectory (assuming `pos` contains the trajectory points)
+# Plot the orbit trajectory
 ax.plot(pos[:, 0], pos[:, 1], pos[:, 2], color='r', label='Orbit Trajectory')
+#
+#  Plot the sphere
+ax.plot_surface(x, y, z,cmap=plt.cm.YlGnBu_r)
+
 
 # Set an equal aspect ratio
 ax.set_aspect('equal')
@@ -118,22 +126,21 @@ ax.set_zlabel('Z')
 ax.set_title('Earth Sphere and Orbit Trajectory')
 ax.legend()
 
-plt.show()"""
+plt.show()
 
 ######################################### Animated 3D Plot
 
 
-fig = plt.figure()
+"""fig = plt.figure()
 
 
 # Create a subplot
 ax = fig.add_subplot(111, projection="3d")
 
 # Set fixed axis limits
-"""ax.set_xlim(-2 * re, 2 * re)
+ax.set_xlim(-2 * re, 2 * re)
 ax.set_ylim(-2 * re, 2 * re)
-ax.set_zlim(-2 * re, 2 * re)"""
-
+ax.set_zlim(-2 * re, 2 * re)
 # Create a sphere
 u = np.linspace(0, 2 * np.pi, 100)
 v = np.linspace(0, np.pi, 100)
@@ -161,6 +168,6 @@ def update(frame):
 
 #Loop over the calculated points to make it look like a smooth graph
 animation = FuncAnimation(fig, update, frames=len(pos), interval=1)
-plt.show()
+plt.show()"""
 
 

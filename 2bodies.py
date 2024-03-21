@@ -97,6 +97,8 @@ solved = scipy.integrate.solve_ivp(
     t_span=[t_0, t_f], #Starts at t0 and continues untill it reaches tf
     y0=y, #Initial state of the system
     t_eval=t_points, #Times at which to solve the computated problem
+    rtol=1e-9,
+    atol=1e-12,
 )
 
 
