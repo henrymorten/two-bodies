@@ -97,7 +97,7 @@ pos, vel = np.split(ydot, 2, axis=1)
 ######################################### Static 3D Plot
 
 
-# Create a sphere
+"""# Create a sphere
 u = np.linspace(0, 2 * np.pi, 100)
 v = np.linspace(0, np.pi, 100)
 #With Radius of the earth
@@ -126,7 +126,7 @@ ax.set_zlabel('Z')
 ax.set_title('Earth Sphere and Orbit Trajectory')
 ax.legend()
 
-plt.show()
+plt.show()"""
 
 ######################################### Animated 3D Plot
 
@@ -170,7 +170,8 @@ def update(frame):
 animation = FuncAnimation(fig, update, frames=len(pos), interval=1)
 plt.show()"""
 
-"""
+######################################### mayavi 3D Plot
+
 from mayavi import mlab
 
 # Create a sphere
@@ -182,15 +183,24 @@ y = re * np.outer(np.sin(u), np.sin(v))
 z = re * np.outer(np.ones(np.size(u)), np.cos(v))
 
 # Plotting
-mlab.figure(size=(600, 600))
+mlab.figure(size=(600, 600),bgcolor=(1,1,1), fgcolor=(0.,0.,0.)) # White background, black forground
 
 # Plot sphere
 mlab.mesh(x, y, z,colormap='gist_earth')
 
-mlab.axes()
+#mlab.outline(color=(0, 0, 0))
+mlab.axes(color=(0, 0, 0), nb_labels=3, extent=[min(pos[:, 0] -1_000), max(pos[:, 0])+1_000, min(pos[:, 1])-1000, max(pos[:, 1])+1000,min(pos[:, 2]) - 1000, max(pos[:, 2])+1000])
+mlab.grid = True  # Add a grid
+
+mlab.xlabel('X [M]')
+mlab.ylabel("Y [M]")
+mlab.zlabel("Z [M]")
+#mlab.title("Spacecraft Orbit")
 
 # Plot line
 mlab.plot3d(pos[:, 0], pos[:, 1], pos[:, 2], color=(1, 0, 0), tube_radius=None, line_width=2)
 
+
+mlab.gcf().scene.parallel_projection = True 
+
 mlab.show()
-"""
