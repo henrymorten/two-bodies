@@ -73,7 +73,7 @@ def diff(t, y):
     return ydot
 
 #Calculate the gravitational parameter (\mu)
-mu = G*me
+mu = G*(me+m2)
 
 # Docs for scipy.integrate.solve_ivp: https://docs.scipy.org/doc/scipy/reference/generated/scipy.integrate.solve_ivp.html
 #Function numerically integrates a system of orginary differential equations given an initial value.
